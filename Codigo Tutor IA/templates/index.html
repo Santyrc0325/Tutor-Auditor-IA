@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Virtual y Auditoría de Código</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .box {
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 32%; /* Ajustamos los contenedores a 32% cada uno */
+        }
+
+        .textarea {
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        .button {
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        h1, h2 {
+            color: #4a4a4a;
+        }
+
+        /* Añadimos scroll para contenedores largos */
+        .scroll-box {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .scroll-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-box::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Tutor Virtual y Auditoría de Código</h1>
+            <p>Ingresa tu código para recibir retroalimentación y auditoría de acuerdo con las normas ISO.</p>
+
+            <form id="form-codigo" action="/procesar" method="POST">
+                <div class="field">
+                    <label class="label">Código:</label>
+                    <div class="control">
+                        <textarea class="textarea" name="codigo" rows="10" placeholder="Escribe tu código aquí..."></textarea>
+                    </div>
+                </div>
+            
+                <div class="field">
+                    <label class="label">Extensión del archivo:</label>
+                    <div class="control">
+                        <input class="input" type="text" name="extension" placeholder="Escribe la extensión del archivo">
+                    </div>
+                </div>
+            
+                <div class="control">
+                    <button class="button is-link" type="submit">Enviar</button>
+                </div>
+            </form>
+            
+            <!-- Contenedores divididos en tres columnas -->
+            <div class="main-container section">
+                <!-- Columna izquierda: Auditoría -->
+                <div class="box">
+                    <h2 class="title">Auditoría del Código</h2>
+                    <div class="scroll-box">
+                        <p><strong>Auditoría de Calidad:</strong> <span id="auditoria_calidad"></span></p>
+                        <p><strong>Auditoría de Seguridad:</strong> <span id="auditoria_seguridad"></span></p>
+                        <p><strong>Auditoría del Proceso:</strong> <span id="auditoria_proceso"></span></p>
+                    </div>
+                </div>
+
+                <!-- Columna central: Retroalimentación -->
+                <div class="box">
+                    <h2 class="title">Retroalimentación del Tutor</h2>
+                    <div class="scroll-box">
+                        <p><strong>Retroalimentación:</strong> <span id="retroalimentacion"></span></p>
+                    </div>
+                </div>
+
+                <!-- Columna derecha: Preguntas Evaluativas -->
+                <div class="box">
+                    <h2 class="title">Preguntas Evaluativas</h2>
+                    <div class="scroll-box">
+                        <p><strong>Preguntas:</strong> <span id="preguntas_evaluativas"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('form-codigo').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+
+            fetch('/procesar', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('auditoria_calidad').innerText = data.auditoria_calidad;
+                document.getElementById('auditoria_seguridad').innerText = data.auditoria_seguridad;
+                document.getElementById('auditoria_proceso').innerText = data.auditoria_proceso;
+                document.getElementById('retroalimentacion').innerText = data.retroalimentacion;
+                document.getElementById('preguntas_evaluativas').innerText = data.preguntas_evaluativas;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
